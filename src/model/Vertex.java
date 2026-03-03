@@ -20,12 +20,18 @@ public class Vertex {
         this.color = color;
     }
 
+    public Vertex(Point3D position, Col color) {
+        this.position = position;
+        this.color = color;
+    }
+
     public Point3D getPosition() {
         return position;
     }
     public Col getColor() {
         return color;
     }
+
     public double getX() {
         return position.getX();
     }
@@ -34,6 +40,16 @@ public class Vertex {
     }
     public double getZ() {
         return position.getZ();
+    }
+
+    @Override
+    public Vertex mul(double d){
+      return new Vertex(position.mul(d),col.mul(d));
+    }
+
+    @Override
+    public Vertex add(Vertex x){
+        return new Vertex(position.add(x.getPosition()),color.add(x.getColor()));
     }
 
 }

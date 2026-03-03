@@ -2,10 +2,14 @@ package controller;
 
 import model.Vertex;
 import raster.ZBuffer;
+import rasterize.LineRasterizer;
+import rasterize.LineRasterizerGraphics;
 import rasterize.TriangelRasterizer;
+import renderer.RendererSolid;
 import transforms.*;
 import view.Panel;
 
+import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -15,18 +19,23 @@ public class Controller3D {
     private final Panel panel;
     private final ZBuffer zBuffer;
     private final TriangelRasterizer triangelRasterizer;
+    private final Renderer renderer;
+    private final LineRasterizer lineRasterizer;
 
     private int offsetX = 0;
     private int offsetY = 0;
     private int lastClickX = 0;
     private int lastClickY = 0;
 
+    //todo vykreslit plochu s barevnym prechodem
 
 
     public Controller3D(Panel panel) {
         this.panel = panel;
         this.zBuffer = new ZBuffer(panel.getRaster());
+        this.lineRasterizer = new LineRasterizerGraphics(panel.getRaster());
         this.triangelRasterizer = new TriangelRasterizer(zBuffer);
+        this.renderer = new RendererSolid(lineRasterizer,triangelRasterizer);
 
         initListeners();
 
