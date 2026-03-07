@@ -11,6 +11,10 @@ public class ZBuffer {
         this.depthBuffer = new DepthBuffer(imageBuffer.getWidth(), imageBuffer.getHeight());
 
     }
+
+    public void clear() {
+        depthBuffer.clear();
+    }
     //vzdy budu volat tuhle metodu
     public void setPixelWithZTest(int x, int y, double z, Col color) {
         // nactu hodnotu z depth bufferu

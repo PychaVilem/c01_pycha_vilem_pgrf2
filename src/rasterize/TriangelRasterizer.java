@@ -49,7 +49,7 @@ public class TriangelRasterizer  {
             Col tmpCol = colA; colA = colB; colB = tmpCol;
         }
 
-        Lerp<Vertex> lerp = new Lerp<>();
+    //    Lerp<Vertex> lerp = new Lerp<>();
 
         // 1. horní část trojúhelníku (A-B proti A-C)
         if (by > ay) {
@@ -59,8 +59,6 @@ public class TriangelRasterizer  {
                 double tAB = (y - ay) / (double) (by - ay);
                 int xAB = (int) Math.round((1 - tAB) * ax + tAB * bx);
                 double zAB = (1 - tAB) * az + tAB * bz;
-                Col colAB = a.getColor().mul(1-tAB).add(c.getColor().mul(tAB));
-                Vertex ab = a.mul(1-tAB).add(b.mul(tAB));
 
 
                 // hrana AC

@@ -1,31 +1,30 @@
 package controller;
 
-import model.Vertex;
+import model.Scene;
 import raster.ZBuffer;
 import rasterize.LineRasterizer;
 import rasterize.LineRasterizerGraphics;
 import rasterize.TriangelRasterizer;
 import renderer.RendererSolid;
-import transforms.*;
+import transforms.Camera;
+import transforms.Mat4;
+import transforms.Mat4OrthoRH;
+import transforms.Mat4PerspRH;
 import view.Panel;
 
-import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class Controller3D {
     private final Panel panel;
     private final ZBuffer zBuffer;
     private final TriangelRasterizer triangelRasterizer;
-    private final Renderer renderer;
+    private final RendererSolid renderer;
+    private final Scene scene;
     private final LineRasterizer lineRasterizer;
 
-    private int offsetX = 0;
-    private int offsetY = 0;
-    private int lastClickX = 0;
-    private int lastClickY = 0;
+    private Camera camera;
+    private boolean perspective = true;
 
     //todo vykreslit plochu s barevnym prechodem
 
@@ -35,7 +34,11 @@ public class Controller3D {
         this.zBuffer = new ZBuffer(panel.getRaster());
         this.lineRasterizer = new LineRasterizerGraphics(panel.getRaster());
         this.triangelRasterizer = new TriangelRasterizer(zBuffer);
-        this.renderer = new RendererSolid(lineRasterizer,triangelRasterizer);
+        this.renderer = new RendererSolid(lineRasterizer, triangelRasterizer);
+        this.scene = new Scene();
+
+        this.camera = new Camera();
+        renderer.setViewportSize(panel.getRaster().getWidth(), panel.getRaster().getHeight());
 
         initListeners();
 
@@ -46,35 +49,16 @@ public class Controller3D {
         panel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                final int step = 10;
-
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_W -> offsetY -= step;
-                    case KeyEvent.VK_S -> offsetY += step;
-                    case KeyEvent.VK_A -> offsetX -= step;
-                    case KeyEvent.VK_D -> offsetX += step;
-                    case KeyEvent.VK_P -> {
-                        offsetX = 0;
-                        offsetY = 0;
-                    }
+                    case KeyEvent.VK_W -> camera = camera.forward(0.5);
+                    case KeyEvent.VK_S -> camera = camera.backward(0.5);
+                    case KeyEvent.VK_A -> camera = camera.left(0.5);
+                    case KeyEvent.VK_D -> camera = camera.right(0.5);
+                    case KeyEvent.VK_P -> perspective = !perspective;
                     default -> {
                         return;
                     }
                 }
-
-                drawScene();
-            }
-        });
-
-        panel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                lastClickX = e.getX();
-                lastClickY = e.getY();
-
-                // posuň scénu tak, aby bod A trojúhelníku byl v místě kliku
-                offsetX = lastClickX - 400;
-                offsetY = lastClickY - 0;
 
                 drawScene();
             }
@@ -85,21 +69,28 @@ public class Controller3D {
 
     private void drawScene() {
         panel.getRaster().clear();
+        zBuffer.clear();
 
-       zBuffer.setPixelWithZTest(50,50,0.1, new Col(0xff0000));
-        zBuffer.setPixelWithZTest(50,50,0.4, new Col(0x00ff00));
+        // view + projekce
+        Mat4 view = camera.getViewMatrix();
+        int w = panel.getRaster().getWidth();
+        int h = panel.getRaster().getHeight();
+        double aspect = (double) h / (double) w;
 
-        triangelRasterizer.rasterize(
-                new Vertex(400,0,0.5),
-                new Vertex(0,300,0.5),
-                new Vertex(799,399,0.5)
-        );
-        triangelRasterizer.rasterize(
-                new Vertex(200,0,0.7,new Col(0x00ff00)),
-                new Vertex(0,150,0.7,new Col(0x00ff00)),
-                new Vertex(799,399,0.7, new Col(0x00ff00))
-        );
+        Mat4 projection;
+        if (perspective) {
+            projection = new Mat4PerspRH(Math.toRadians(60), aspect, 0.1, 50.0);
+        } else {
+            projection = new Mat4OrthoRH(20.0, 20.0 * aspect, 0.1, 50.0);
+        }
 
+        renderer.setViewMatrix(view);
+        renderer.setProjectionMatrix(projection);
+
+        // vykreslení celé scény přes renderer
+        for (solid.Solid solid : scene.getSolids()) {
+            renderer.render(solid);
+        }
 
         panel.repaint();
     }

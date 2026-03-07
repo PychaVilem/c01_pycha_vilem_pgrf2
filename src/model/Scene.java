@@ -1,5 +1,6 @@
 package model;
 
+import solid.Arrow;
 import solid.Solid;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class Scene {
     public Scene() {
         solids = new ArrayList<>();
         // přidáme základní šipku do scény
-      //  solids.add(new Arrow());
+        solids.add(new Arrow());
     }
 
     public List<Solid> getSolids() {
