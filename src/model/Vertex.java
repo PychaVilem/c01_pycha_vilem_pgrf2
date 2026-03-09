@@ -42,6 +42,7 @@ public class Vertex {
         return position.getZ();
     }
 
+    /*
     @Override
     public Vertex mul(double d){
       return new Vertex(position.mul(d),col.mul(d));
@@ -51,5 +52,5 @@ public class Vertex {
     public Vertex add(Vertex x){
         return new Vertex(position.add(x.getPosition()),color.add(x.getColor()));
     }
-
+*/
 }

@@ -49,32 +49,33 @@ public class TriangelRasterizer  {
             Col tmpCol = colA; colA = colB; colB = tmpCol;
         }
 
-    //    Lerp<Vertex> lerp = new Lerp<>();
-
         // 1. horní část trojúhelníku (A-B proti A-C)
         if (by > ay) {
             for (int y = ay; y <= by; y++) {
                 // hrana AB
-                // todo prepsat to aby se to spravne vykreslovalo
                 double tAB = (y - ay) / (double) (by - ay);
                 int xAB = (int) Math.round((1 - tAB) * ax + tAB * bx);
                 double zAB = (1 - tAB) * az + tAB * bz;
-
+                Col colAB = lerpCol(colA, colB, tAB);
 
                 // hrana AC
                 double tAC = (y - ay) / (double) (cy - ay);
                 int xAC = (int) Math.round((1 - tAC) * ax + tAC * cx);
                 double zAC = (1 - tAC) * az + tAC * cz;
+                Col colAC = lerpCol(colA, colC, tAC);
 
                 int xStart = xAB;
                 int xEnd = xAC;
                 double zStart = zAB;
                 double zEnd = zAC;
+                Col colStart = colAB;
+                Col colEnd = colAC;
 
                 // kontrola, aby xStart <= xEnd, jinak prohodit
                 if (xStart > xEnd) {
                     int tmpX = xStart; xStart = xEnd; xEnd = tmpX;
                     double tmpZ = zStart; zStart = zEnd; zEnd = tmpZ;
+                    Col tmpCol = colStart; colStart = colEnd; colEnd = tmpCol;
                 }
 
                 // scanline od xStart do xEnd včetně
@@ -82,8 +83,8 @@ public class TriangelRasterizer  {
                 for (int x = xStart; x <= xEnd; x++) {
                     double t = (dx == 0) ? 0.0 : (x - xStart) / (double) dx;
                     double finalZ = (1 - t) * zStart + t * zEnd;
-                    // zatím použijeme barvu vrcholu A (můžeš později interpolovat barvu podobně jako Z)
-                    zBuffer.setPixelWithZTest(x, y, finalZ, colA);
+                    Col finalCol = lerpCol(colStart, colEnd, t);
+                    zBuffer.setPixelWithZTest(x, y, finalZ, finalCol);
                 }
             }
         }
@@ -95,33 +96,39 @@ public class TriangelRasterizer  {
                 double tBC = (y - by) / (double) (cy - by);
                 int xBC = (int) Math.round((1 - tBC) * bx + tBC * cx);
                 double zBC = (1 - tBC) * bz + tBC * cz;
+                Col colBC = lerpCol(colB, colC, tBC);
 
                 // hrana AC (stejná jako výše)
                 double tAC = (y - ay) / (double) (cy - ay);
                 int xAC = (int) Math.round((1 - tAC) * ax + tAC * cx);
                 double zAC = (1 - tAC) * az + tAC * cz;
+                Col colAC = lerpCol(colA, colC, tAC);
 
                 int xStart = xBC;
                 int xEnd = xAC;
                 double zStart = zBC;
                 double zEnd = zAC;
+                Col colStart = colBC;
+                Col colEnd = colAC;
 
                 if (xStart > xEnd) {
                     int tmpX = xStart; xStart = xEnd; xEnd = tmpX;
                     double tmpZ = zStart; zStart = zEnd; zEnd = tmpZ;
+                    Col tmpCol = colStart; colStart = colEnd; colEnd = tmpCol;
                 }
 
                 int dx = xEnd - xStart;
                 for (int x = xStart; x <= xEnd; x++) {
                     double t = (dx == 0) ? 0.0 : (x - xStart) / (double) dx;
                     double finalZ = (1 - t) * zStart + t * zEnd;
-                    zBuffer.setPixelWithZTest(x, y, finalZ, colA);
+                    Col finalCol = lerpCol(colStart, colEnd, t);
+                    zBuffer.setPixelWithZTest(x, y, finalZ, finalCol);
                 }
             }
         }
     }
+
+    private static Col lerpCol(Col a, Col b, double t) {
+        return a.mul(1 - t).add(b.mul(t)).saturate();
+    }
 }
-//zBuffer
-// prijme barvu -> refaktor
-//
-//

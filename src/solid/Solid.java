@@ -14,6 +14,16 @@ public abstract class Solid {
     protected final List<Integer> indexBuffer;
     protected List<Part> partBuffer;
     private Mat4 modelMat;
+    /** 0 = normální barva, 1 = mix s R, 2 = mix s G, 3 = mix s B (cyklus klávesou C). */
+    private int colorBlendMode = 0;
+
+    public int getColorBlendMode() {
+        return colorBlendMode;
+    }
+
+    public void setColorBlendMode(int colorBlendMode) {
+        this.colorBlendMode = Math.max(0, Math.min(3, colorBlendMode));
+    }
 
     public Solid(final List<Vertex> vertexBuffer,
                  final List<Integer> indexBuffer,
