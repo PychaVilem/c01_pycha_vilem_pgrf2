@@ -2,6 +2,7 @@ package model;
 
 import transforms.Col;
 import transforms.Point3D;
+import transforms.Vec2D;
 
 import java.awt.*;
 
@@ -15,9 +16,10 @@ public class Vertex {
         this.color = new Col(0xffffff);
     }
 
-    public Vertex(double x, double y, double z, Col color) {
+    public Vertex(double x, double y, double z, Col color, Vec2D uv) {
         this.position = new Point3D(x, y, z);
         this.color = color;
+        this.uv = uv;
     }
 
     public Vertex(Point3D position, Col color) {

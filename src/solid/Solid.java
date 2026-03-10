@@ -2,6 +2,8 @@ package solid;
 
 import model.Part;
 import model.Vertex;
+import shader.Shader;
+import shader.ShaderConstant;
 import transforms.Mat4;
 import transforms.Mat4Identity;
 
@@ -16,6 +18,7 @@ public abstract class Solid {
     private Mat4 modelMat;
     /** 0 = normální barva, 1 = mix s R, 2 = mix s G, 3 = mix s B (cyklus klávesou C). */
     private int colorBlendMode = 0;
+    protected Shader shader = new ShaderConstant();
 
     public int getColorBlendMode() {
         return colorBlendMode;
@@ -71,5 +74,9 @@ public abstract class Solid {
      */
     public ArrayList<Integer> getIndices() {
         return new ArrayList<>(indexBuffer);
+    }
+
+    public Shader getShader() {
+        return shader;
     }
 }

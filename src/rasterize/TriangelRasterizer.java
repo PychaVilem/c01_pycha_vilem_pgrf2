@@ -2,6 +2,8 @@ package rasterize;
 
 import model.Vertex;
 import raster.ZBuffer;
+import shader.Shader;
+import shader.ShaderInterpolated;
 import transforms.Col;
 import util.Lerp;
 
@@ -13,7 +15,9 @@ public class TriangelRasterizer  {
 
     }
 
-    public void rasterize(Vertex a, Vertex b, Vertex c) {
+    public void rasterize(Vertex a, Vertex b, Vertex c, Shader shader) {
+        Shader shader = new ShaderInterpolated();
+
         // přepočet souřadnic na int, zůstává double Z
         int ax = (int) Math.round(a.getX());
         int ay = (int) Math.round(a.getY());

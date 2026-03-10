@@ -162,7 +162,7 @@ public class RendererSolid {
                         Vertex aDraw = new Vertex(a.getX(), a.getY(), a.getZ(), ca);
                         Vertex bDraw = new Vertex(b.getX(), b.getY(), b.getZ(), cb);
                         Vertex cDraw = new Vertex(c.getX(), c.getY(), c.getZ(), cc);
-                        triangelRasterizer.rasterize(aDraw, bDraw, cDraw);
+                        triangelRasterizer.rasterize(aDraw, bDraw, cDraw, shader.getShare);
                     }
                     break;
                 }
@@ -171,5 +171,46 @@ public class RendererSolid {
                     break;
             }
         }
+        // todo orezani
+        // todo 1. fast clip
+        // todo orezani podle z
+        // todo
     }
-}
+    /*
+    public void orezaniPodleZ(Solid solid) {
+
+        //todo prohazet vrcholy podle z, od max po min
+        double zMin = 0;
+        for (Part part : solid.getPartBuffer()) {
+            for (int i = 0; i < part.getCount(); i++) {
+                int indexA = solid.getIndexBuffer().get(index++);
+                int indexB = solid.getIndexBuffer().get(index++);
+                int indexC = solid.getIndexBuffer().get(index++);
+
+                if (indexA.getZ < zMin)
+                    continue;
+
+                if (b.getZ() < zMin) {
+                  /*  if ((A.x > A.w && B.x > B.w && C.x > C.w)||
+                            (A.x < -A.w && B.x < -B.w && C.x <- C.w)||
+*/
+                    //todo najit novy trojuhlekni
+                    //todo hledam vrchol AB,AC
+                    //todo musim spocitat interpolacni keficinety a pak najit vrcholy
+                    //Vertex ab
+                    //Vertex ac
+                    //zastavit na tom, aby nesla dalsi podminka
+                }
+            /*    if (c.getX() < zMin) {
+                    //rozdeleni na dva ptrojuhleniky kdyz to bude nejaky jiny tvar -> vypocitavani dalsich bodu
+                    //todo najit dva nove trojuhleniky
+                    // todo rasterizer
+
+                }
+
+            }
+        }
+    }
+
+        }
+        */

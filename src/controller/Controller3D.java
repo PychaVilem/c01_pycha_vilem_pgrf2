@@ -1,27 +1,23 @@
 package controller;
 
 import model.Scene;
+import model.Vertex;
 import raster.ZBuffer;
 import rasterize.LineRasterizer;
 import rasterize.LineRasterizerGraphics;
 import rasterize.TriangelRasterizer;
 import renderer.RendererSolid;
-import transforms.Camera;
-import transforms.Mat4;
-import transforms.Mat4OrthoRH;
-import transforms.Mat4PerspRH;
-import transforms.Mat4RotX;
-import transforms.Mat4RotY;
-import transforms.Mat4RotZ;
-import transforms.Mat4Scale;
-import transforms.Mat4Transl;
-import transforms.Vec3D;
+import shader.Shader;
+import transforms.*;
 import view.Panel;
 
+import javax.imageio.ImageIO;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class Controller3D {
     private final Panel panel;
@@ -46,7 +42,9 @@ public class Controller3D {
     private static final long REDRAW_THROTTLE_MS = 10;
     private long lastDrawTime = 0;
 
-    //todo vykreslit plochu s barevnym prechodem
+    private final BufferedImage texture;
+
+
 
 
     public Controller3D(Panel panel) {
@@ -56,6 +54,14 @@ public class Controller3D {
         this.triangelRasterizer = new TriangelRasterizer(zBuffer);
         this.renderer = new RendererSolid(lineRasterizer, triangelRasterizer);
         this.scene = new Scene();
+
+        //Texures
+        try{
+            texture = ImageIO.read(new File("./res/textures/texture.png"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
 
         // Pozice (4, 2, 3); azimuth a zenith tak, aby pohled směřoval na střed os (0, 0, 0.5)
         double dx = 0 - 4, dy = 0 - 2, dz = 0.5 - 3;
@@ -174,6 +180,18 @@ public class Controller3D {
         });
 
         panel.requestFocusInWindow();
+
+        panel.AddKeyListenners(){
+            @Override
+                    public void keyPressed(keyEvent e){
+                arrow.setShader(new Shader(){
+                    @Override
+                    public Col getColor(Vertex pixel){
+
+                    }
+                }
+            }
+        }
     }
 
     private void applyTranslate(solid.Solid solid, double dx, double dy, double dz) {
