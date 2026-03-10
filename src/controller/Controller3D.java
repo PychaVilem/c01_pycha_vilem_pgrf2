@@ -43,7 +43,7 @@ public class Controller3D {
     private static final double ROT_STEP = 0.15;
     private static final double SCALE_UP = 1.15;
     private static final double SCALE_DOWN = 1.0 / 1.15;
-    private static final long REDRAW_THROTTLE_MS = 20;
+    private static final long REDRAW_THROTTLE_MS = 10;
     private long lastDrawTime = 0;
 
     //todo vykreslit plochu s barevnym prechodem

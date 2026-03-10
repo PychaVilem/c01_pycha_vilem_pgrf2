@@ -3,6 +3,7 @@ package rasterize;
 import model.Vertex;
 import raster.ZBuffer;
 import transforms.Col;
+import util.Lerp;
 
 public class TriangelRasterizer  {
     private final ZBuffer zBuffer;
@@ -56,13 +57,13 @@ public class TriangelRasterizer  {
                 double tAB = (y - ay) / (double) (by - ay);
                 int xAB = (int) Math.round((1 - tAB) * ax + tAB * bx);
                 double zAB = (1 - tAB) * az + tAB * bz;
-                Col colAB = lerpCol(colA, colB, tAB);
+                Col colAB = Lerp.lerp(colA, colB, tAB);
 
                 // hrana AC
                 double tAC = (y - ay) / (double) (cy - ay);
                 int xAC = (int) Math.round((1 - tAC) * ax + tAC * cx);
                 double zAC = (1 - tAC) * az + tAC * cz;
-                Col colAC = lerpCol(colA, colC, tAC);
+                Col colAC = Lerp.lerp(colA, colC, tAC);
 
                 int xStart = xAB;
                 int xEnd = xAC;
@@ -83,7 +84,7 @@ public class TriangelRasterizer  {
                 for (int x = xStart; x <= xEnd; x++) {
                     double t = (dx == 0) ? 0.0 : (x - xStart) / (double) dx;
                     double finalZ = (1 - t) * zStart + t * zEnd;
-                    Col finalCol = lerpCol(colStart, colEnd, t);
+                    Col finalCol = Lerp.lerp(colStart, colEnd, t);
                     zBuffer.setPixelWithZTest(x, y, finalZ, finalCol);
                 }
             }
@@ -96,13 +97,13 @@ public class TriangelRasterizer  {
                 double tBC = (y - by) / (double) (cy - by);
                 int xBC = (int) Math.round((1 - tBC) * bx + tBC * cx);
                 double zBC = (1 - tBC) * bz + tBC * cz;
-                Col colBC = lerpCol(colB, colC, tBC);
+                Col colBC = Lerp.lerp(colB, colC, tBC);
 
                 // hrana AC (stejná jako výše)
                 double tAC = (y - ay) / (double) (cy - ay);
                 int xAC = (int) Math.round((1 - tAC) * ax + tAC * cx);
                 double zAC = (1 - tAC) * az + tAC * cz;
-                Col colAC = lerpCol(colA, colC, tAC);
+                Col colAC = Lerp.lerp(colA, colC, tAC);
 
                 int xStart = xBC;
                 int xEnd = xAC;
@@ -121,14 +122,10 @@ public class TriangelRasterizer  {
                 for (int x = xStart; x <= xEnd; x++) {
                     double t = (dx == 0) ? 0.0 : (x - xStart) / (double) dx;
                     double finalZ = (1 - t) * zStart + t * zEnd;
-                    Col finalCol = lerpCol(colStart, colEnd, t);
+                    Col finalCol = Lerp.lerp(colStart, colEnd, t);
                     zBuffer.setPixelWithZTest(x, y, finalZ, finalCol);
                 }
             }
         }
-    }
-
-    private static Col lerpCol(Col a, Col b, double t) {
-        return a.mul(1 - t).add(b.mul(t)).saturate();
     }
 }

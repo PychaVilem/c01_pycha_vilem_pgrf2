@@ -2,12 +2,12 @@ package model;
 
 import solid.Arrow;
 import solid.Axes;
+import solid.Cone;
 import solid.Cube;
-import solid.Ctyrsten;
-import solid.Kuzel;
-import solid.Plocha;
+import solid.Cylinder;
 import solid.Solid;
-import solid.Valec;
+import solid.Surface;
+import solid.Tetradedron;
 import transforms.Mat4Transl;
 
 import java.util.ArrayList;
@@ -28,18 +28,18 @@ public class Scene {
         Solid cube = new Cube();
         cube.setModelMat(new Mat4Transl(2, 0, 0.5));
         solids.add(cube);
-        Solid plocha = new Plocha();
-        plocha.setModelMat(new Mat4Transl(-1.5, 0, 0.5));
-        solids.add(plocha);
-        Solid valec = new Valec();
-        valec.setModelMat(new Mat4Transl(0, -1.5, 0.5));
-        solids.add(valec);
-        Solid ctyrsten = new Ctyrsten();
-        ctyrsten.setModelMat(new Mat4Transl(0, 1.5, 0.5));
-        solids.add(ctyrsten);
-        Solid kuzel = new Kuzel();
-        kuzel.setModelMat(new Mat4Transl(-2, -1, 0.5));
-        solids.add(kuzel);
+        Solid surface = new Surface();
+        surface.setModelMat(new Mat4Transl(-1.5, 0, 0.5));
+        solids.add(surface);
+        Solid cylinder = new Cylinder();
+        cylinder.setModelMat(new Mat4Transl(0, -1.5, 0.5));
+        solids.add(cylinder);
+        Solid tetradedron = new Tetradedron();
+        tetradedron.setModelMat(new Mat4Transl(0, 1.5, 0.5));
+        solids.add(tetradedron);
+        Solid cone = new Cone();
+        cone.setModelMat(new Mat4Transl(-2, -1, 0.5));
+        solids.add(cone);
         activeIndex = 0;
     }
 
