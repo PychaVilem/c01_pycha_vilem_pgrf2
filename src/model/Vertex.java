@@ -19,7 +19,7 @@ public class Vertex {
     public Vertex(double x, double y, double z, Col color, Vec2D uv) {
         this.position = new Point3D(x, y, z);
         this.color = color;
-        this.uv = uv;
+        this.Vec2D = uv;
     }
 
     public Vertex(Point3D position, Col color) {
