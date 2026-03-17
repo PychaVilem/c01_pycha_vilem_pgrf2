@@ -3,6 +3,7 @@ package model;
 import transforms.Col;
 import transforms.Point3D;
 import transforms.Vec2D;
+import transforms.Vec3D;
 
 /**
  * Vrchol: 3D pozice + barva (+ případně texturovací souřadnice uv).
@@ -38,10 +39,11 @@ public class Vertex {
         this(position, color, null);
     }
 
-    public Vertex(Point3D position, Col color, Vec2D uv) {
+    public Vertex(Point3D position, Col color, Vec2D uv, Vec3D vec) {
         this.position = position;
         this.color = color;
         this.uv = uv;
+        this.vec = vec;
     }
 
     public Point3D getPosition() {

@@ -9,16 +9,7 @@ import renderer.RendererSolid;
 import shader.ShaderConstant;
 import shader.ShaderInterpolated;
 import shader.ShaderTexture;
-import transforms.Camera;
-import transforms.Mat4;
-import transforms.Mat4OrthoRH;
-import transforms.Mat4PerspRH;
-import transforms.Mat4RotX;
-import transforms.Mat4RotY;
-import transforms.Mat4RotZ;
-import transforms.Mat4Scale;
-import transforms.Mat4Transl;
-import transforms.Vec3D;
+import transforms.*;
 import view.Panel;
 
 import javax.imageio.ImageIO;
@@ -123,6 +114,18 @@ public class Controller3D {
                     }
                     // přepínání shaderu na aktivním tělese: texture -> interpolated -> constant -> zpět
                     case KeyEvent.VK_K -> {
+                        Point3D lightPosition = new Point3D(0,0,0.5);
+                        Vec3D normal = Pixel.getNormal().normalized().get();
+                        lightPosition - pixel.getPosition(); // position musi byt ve world space
+                        //Vec3d lightvecteor = (lightposioitn - pixel.getPositionWorldSpace().Normalize();
+
+                        //spocitame uhel mezi normalou a light vektore
+                        double lDot = Math.max(0, lightVector.dot(normal));
+
+                        //todo vektor ke svetlu = pozice svetla 0 pozice vertexu (erex je raster)
+
+                        return pixelCollor.mul(ambientColor.add(diffuseColor.Mul(lDotN)));
+
                         if (active != null) {
                             var current = active.getShader();
                             if (current instanceof ShaderTexture) {
