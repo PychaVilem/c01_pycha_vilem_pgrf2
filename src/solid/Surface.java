@@ -5,6 +5,7 @@ import model.Topology;
 import model.Vertex;
 import transforms.Col;
 import transforms.Mat4Identity;
+import transforms.Vec2D;
 
 import java.util.ArrayList;
 
@@ -17,11 +18,11 @@ public class Surface extends Solid {
     public Surface() {
         super(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new Mat4Identity());
 
-        // Každý roh jiná barva → plynulý přechod díky interpolaci v rasterizéru
-        vertexBuffer.add(new Vertex(-0.5, -0.5, 0, new Col(0xff0000))); // 0 červená
-        vertexBuffer.add(new Vertex(0.5, -0.5, 0, new Col(0x00ff00)));  // 1 zelená
-        vertexBuffer.add(new Vertex(0.5, 0.5, 0, new Col(0x0000ff)));   // 2 modrá
-        vertexBuffer.add(new Vertex(-0.5, 0.5, 0, new Col(0xffff00)));  // 3 žlutá
+        // Každý roh jiná barva + uv souřadnice pro texturu
+        vertexBuffer.add(new Vertex(-0.5, -0.5, 0, new Col(0xff0000), new Vec2D(0, 0))); // 0
+        vertexBuffer.add(new Vertex(0.5, -0.5, 0, new Col(0x00ff00), new Vec2D(1, 0)));  // 1
+        vertexBuffer.add(new Vertex(0.5, 0.5, 0, new Col(0x0000ff), new Vec2D(1, 1)));   // 2
+        vertexBuffer.add(new Vertex(-0.5, 0.5, 0, new Col(0xffff00), new Vec2D(0, 1)));  // 3
 
         addIndices(0, 1, 1, 2, 2, 3, 3, 0);
         addIndices(0, 1, 2, 0, 2, 3);

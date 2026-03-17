@@ -1,14 +1,24 @@
 package controller;
 
 import model.Scene;
-import model.Vertex;
 import raster.ZBuffer;
 import rasterize.LineRasterizer;
 import rasterize.LineRasterizerGraphics;
 import rasterize.TriangelRasterizer;
 import renderer.RendererSolid;
-import shader.Shader;
-import transforms.*;
+import shader.ShaderConstant;
+import shader.ShaderInterpolated;
+import shader.ShaderTexture;
+import transforms.Camera;
+import transforms.Mat4;
+import transforms.Mat4OrthoRH;
+import transforms.Mat4PerspRH;
+import transforms.Mat4RotX;
+import transforms.Mat4RotY;
+import transforms.Mat4RotZ;
+import transforms.Mat4Scale;
+import transforms.Mat4Transl;
+import transforms.Vec3D;
 import view.Panel;
 
 import javax.imageio.ImageIO;
@@ -41,11 +51,8 @@ public class Controller3D {
     private static final double SCALE_DOWN = 1.0 / 1.15;
     private static final long REDRAW_THROTTLE_MS = 10;
     private long lastDrawTime = 0;
-
-    private final BufferedImage texture;
-
-
-
+    private BufferedImage texture;
+    private ShaderTexture textureShader;
 
     public Controller3D(Panel panel) {
         this.panel = panel;
@@ -55,13 +62,29 @@ public class Controller3D {
         this.renderer = new RendererSolid(lineRasterizer, triangelRasterizer);
         this.scene = new Scene();
 
-        //Texures
-        try{
-            texture = ImageIO.read(new File("./res/textures/texture.png"));
+        // načtení textury (pokud existuje) – zkusíme více cest a formátů
+        try {
+            BufferedImage tex = null;
+            File fileJpg = new File("resources/textures/texture2.jpg");
+            File filePng = new File("resources/textures/texture.png");
+            if (fileJpg.exists()) {
+                tex = ImageIO.read(fileJpg);
+            } else if (filePng.exists()) {
+                tex = ImageIO.read(filePng);
+            }
+            if (tex != null) {
+                texture = tex;
+                textureShader = new ShaderTexture(texture);
+                // po úspěšném načtení pošleme texturu i rendereru
+                renderer.setTexture(texture);
+            } else {
+                texture = null;
+                textureShader = null;
+            }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            texture = null;
+            textureShader = null;
         }
-
 
         // Pozice (4, 2, 3); azimuth a zenith tak, aby pohled směřoval na střed os (0, 0, 0.5)
         double dx = 0 - 4, dy = 0 - 2, dz = 0.5 - 3;
@@ -96,6 +119,25 @@ public class Controller3D {
                     case KeyEvent.VK_M -> {
                         wireframeOnly = !wireframeOnly;
                         renderer.setWireframeOnly(wireframeOnly);
+                        e.consume();
+                    }
+                    // přepínání shaderu na aktivním tělese: texture -> interpolated -> constant -> zpět
+                    case KeyEvent.VK_K -> {
+                        if (active != null) {
+                            var current = active.getShader();
+                            if (current instanceof ShaderTexture) {
+                                active.setShader(new ShaderInterpolated());
+                            } else if (current instanceof ShaderInterpolated) {
+                                active.setShader(new ShaderConstant());
+                            } else {
+                                // výchozí: zkusíme texturový shader, pokud máme texturu
+                                if (textureShader != null) {
+                                    active.setShader(textureShader);
+                                } else {
+                                    active.setShader(new ShaderInterpolated());
+                                }
+                            }
+                        }
                         e.consume();
                     }
                     case KeyEvent.VK_C -> {
@@ -180,18 +222,6 @@ public class Controller3D {
         });
 
         panel.requestFocusInWindow();
-
-        panel.AddKeyListenners(){
-            @Override
-                    public void keyPressed(keyEvent e){
-                arrow.setShader(new Shader(){
-                    @Override
-                    public Col getColor(Vertex pixel){
-
-                    }
-                }
-            }
-        }
     }
 
     private void applyTranslate(solid.Solid solid, double dx, double dy, double dz) {
