@@ -1,5 +1,6 @@
 package model;
 
+// jeden usek index bufferu: od startIndex jsou po sobe usecky nebo trojuhelniky (podle topology)
 public class Part {
 
     private final Topology topology;

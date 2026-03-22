@@ -4,6 +4,7 @@ import raster.RasterBufferedImage;
 
 import java.awt.*;
 
+// dratovy rezim - usecky pres hotovy Graphics2D drawLine (bez vlastniho z bufferu na carach)
 public class LineRasterizerGraphics extends LineRasterizer {
 
     public LineRasterizerGraphics(RasterBufferedImage raster) {

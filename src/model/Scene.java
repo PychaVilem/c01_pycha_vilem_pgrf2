@@ -6,6 +6,7 @@ import solid.Cone;
 import solid.Cube;
 import solid.Cylinder;
 import solid.Solid;
+import solid.Sphere;
 import solid.Surface;
 import solid.Tetradedron;
 import transforms.Mat4Transl;
@@ -13,12 +14,17 @@ import transforms.Mat4Transl;
 import java.util.ArrayList;
 import java.util.List;
 
+// seznam vsech teles ve scene + ktery objekt je aktivni (na nej jdou transformace)
+// a ktery objekt urcuje pozici svetla pro osvetleni
 public class Scene {
 
     private final List<Solid> solids;
+    private final Sphere lightSphere;
+    // odkud beru pozici (a barvu) bodoveho svetla - obvykle mala koule na konci seznamu
+    private Solid lightSourceSolid;
     private int activeIndex;
 
-    /** Index souřadnicových os – nelze vybrat jako aktivní těleso. */
+    // osy jsou na indexu 1, ty nechci dat jako aktivni pri tabu
     public static final int AXES_INDEX = 1;
 
     public Scene() {
@@ -40,6 +46,14 @@ public class Scene {
         Solid cone = new Cone();
         cone.setModelMat(new Mat4Transl(-2, -1, 0.5));
         solids.add(cone);
+        Solid sphere = new Sphere();
+        sphere.setModelMat(new Mat4Transl(1.5, 1.3, 0.7));
+        solids.add(sphere);
+        // mala bila koule jako vizual zdroje svetla (posledni v seznamu)
+        lightSphere = new Sphere(0.18, 12, 18, new transforms.Col(0xffffff));
+        lightSphere.setModelMat(new Mat4Transl(0.0, 0.0, 1.2));
+        solids.add(lightSphere);
+        lightSourceSolid = lightSphere;
         activeIndex = 0;
     }
 
@@ -47,18 +61,34 @@ public class Scene {
         return solids;
     }
 
-    /** Index aktuálně vybraného tělesa (pro modelovací transformace). */
+    public Sphere getLightSphere() {
+        return lightSphere;
+    }
+
+    public Solid getLightSourceSolid() {
+        return lightSourceSolid;
+    }
+
+    // svetlo = stred modelove matice vybraneho telesa (osy ne)
+    public void setLightSourceSolid(Solid solid) {
+        if (solid == null) return;
+        if (solid instanceof Axes) return;
+        lightSourceSolid = solid;
+    }
+
+    public void resetLightSourceToDefault() {
+        lightSourceSolid = lightSphere;
+    }
+
     public int getActiveIndex() {
         return activeIndex;
     }
 
-    /** Aktuálně vybrané těleso, nebo null pokud je scéna prázdná. */
     public Solid getActive() {
         if (solids.isEmpty()) return null;
         return solids.get(activeIndex);
     }
 
-    /** Přepne na další těleso (cyklicky). Přeskočí osy XYZ. */
     public void nextActive() {
         if (solids.isEmpty()) return;
         do {
@@ -66,7 +96,6 @@ public class Scene {
         } while (activeIndex == AXES_INDEX);
     }
 
-    /** Přepne na předchozí těleso (cyklicky). Přeskočí osy XYZ. */
     public void prevActive() {
         if (solids.isEmpty()) return;
         do {
@@ -74,7 +103,6 @@ public class Scene {
         } while (activeIndex == AXES_INDEX);
     }
 
-    /** Nastaví aktivní těleso podle indexu. Osy (index 1) nelze vybrat – nastaví se 0. */
     public void setActiveIndex(int index) {
         if (index < 0 || index >= solids.size()) return;
         if (index == AXES_INDEX) {
@@ -82,5 +110,17 @@ public class Scene {
         } else {
             activeIndex = index;
         }
+    }
+
+    // nova vec vzdy pred svetelnou kouli (ta zustane posledni)
+    public void addSolidBeforeLight(Solid solid) {
+        if (solids.isEmpty()) {
+            solids.add(solid);
+            activeIndex = 0;
+            return;
+        }
+        int insertAt = solids.size() - 1;
+        solids.add(insertAt, solid);
+        activeIndex = insertAt;
     }
 }

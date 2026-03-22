@@ -5,7 +5,8 @@ import transforms.Col;
 import java.util.Optional;
 
 
-public interface Raster <T>   //T promena co bude prezetntovat vsechny ty promene
+// 2D pole hodnot (barva nebo hloubka) - rozhrani pro raster a depth buffer
+public interface Raster <T>
 {
     void setValue(int x, int y, T value);
     Optional<T> getValue(int x, int y);

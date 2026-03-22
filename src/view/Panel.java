@@ -5,6 +5,7 @@ import raster.RasterBufferedImage;
 import javax.swing.*;
 import java.awt.*;
 
+// swing panel: pod tim je bitmapa (RasterBufferedImage), paint ji jen vykresli na obrazovku
 public class Panel extends JPanel {
 
     private final RasterBufferedImage raster;
@@ -18,6 +19,7 @@ public class Panel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        // obraz uz namaloval renderer do rasteru, tady jen kopie do okna
         g.drawImage(raster.getImage(), 0, 0, null);
     }
 

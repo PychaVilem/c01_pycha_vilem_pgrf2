@@ -4,6 +4,7 @@ import model.Line;
 import raster.RasterBufferedImage;
 import transforms.Col;
 
+// zaklad pro kresleni usecek - konkretni implementace je LineRasterizerGraphics (drawLine z awt)
 public abstract class LineRasterizer {
     protected RasterBufferedImage raster;
     protected Col color;

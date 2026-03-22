@@ -2,6 +2,7 @@ package raster;
 
 import java.util.Optional;
 
+// hloubka 0..1 v kazdem pixelu - mensi = bliz kamine (predni plochy vyhravaji)
 public class DepthBuffer implements Raster<Double>{
 
     private final double[][] buffer;
@@ -12,7 +13,7 @@ public class DepthBuffer implements Raster<Double>{
        this.width = width;
        this.height = height;
        this.buffer = new double[height][width];
-       clear();
+       clear(); // 1 = daleko / prazdno
     }
 
     @Override

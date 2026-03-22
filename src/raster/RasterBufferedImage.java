@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
 
+// bitmapa pro vykresleni sceny (barva per pixel pres Col)
 public class RasterBufferedImage implements Raster<Col> {
 
     private BufferedImage image;
@@ -16,7 +17,7 @@ public class RasterBufferedImage implements Raster<Col> {
 
     @Override
     public void setValue(int x, int y, Col color) {
-        // ošetření zápisu mimo raster
+        // mimo platno nic neukladam
         if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight() || color == null) {
             return;
         }
@@ -25,7 +26,6 @@ public class RasterBufferedImage implements Raster<Col> {
 
     @Override
     public Optional<Col> getValue(int x, int y) {
-        // ošetření get mimo raster
         if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
             return Optional.empty();
         }

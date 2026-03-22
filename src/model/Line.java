@@ -1,5 +1,6 @@
 package model;
 
+// usecka v obrazovce (pixely) - pomocna trida pro LineRasterizer kdyby se chtelo predavat cele usecky
 public class Line
 {
     private final int x1, y1, x2, y2;

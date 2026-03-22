@@ -8,12 +8,12 @@ import transforms.Mat4Identity;
 
 import java.util.ArrayList;
 
+// tri osy rgb - usecka telo + trojuhelnik na hrot
 public class Axes extends Solid {
 
     public Axes() {
         super(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new Mat4Identity());
 
-        // X osa - červená šipka podél +X
         int baseX = vertexBuffer.size();
         vertexBuffer.add(new Vertex(0, 0, 0.5, new Col(0xff0000)));   // 0
         vertexBuffer.add(new Vertex(1, 0, 0.5, new Col(0xff0000)));   // 1
@@ -27,7 +27,6 @@ public class Axes extends Solid {
         vertexBuffer.add(new Vertex(0.1, 0.8, 0.5, new Col(0x00ff00)));// 6
         vertexBuffer.add(new Vertex(-0.1, 0.8, 0.5, new Col(0x00ff00)));// 7
 
-        // Z osa - modrá šipka podél +Z
         int baseZ = vertexBuffer.size();
         vertexBuffer.add(new Vertex(0, 0, 0.5, new Col(0x0000ff)));   // 8
         vertexBuffer.add(new Vertex(0, 0, 1.5, new Col(0x0000ff)));   // 9
@@ -41,16 +40,13 @@ public class Axes extends Solid {
                 baseZ + 0, baseZ + 1
         );
 
-        // indexy pro hroty (3 trojúhelníky)
         addIndices(
                 baseX + 1, baseX + 2, baseX + 3,
                 baseY + 1, baseY + 2, baseY + 3,
                 baseZ + 1, baseZ + 2, baseZ + 3
         );
 
-        // 3 úsečky od indexu 0
         partBuffer.add(new Part(Topology.LINES, 3, 0));
-        // 3 trojúhelníky od indexu 6
         partBuffer.add(new Part(Topology.TRIANGLES, 3, 6));
     }
 }
